@@ -1,0 +1,42 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+  "python.venvPath": "${workspaceFolder}",
+  "python.terminal.activateEnvironment": true,
+
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": ["-NoExit", "-Command", "&{. '.venv\\Scripts\\activate.ps1'}"]
+    },
+    "Git Bash": {
+      "path": "${env:ProgramFiles}\\Git\\bin\\bash.exe",
+      "args": ["--login", "-i"]
+    },
+    "Command Prompt": { "source": "Command Prompt" },
+    "WSL": { "source": "WSL" }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+  "terminal.integrated.profiles.osx": {
+    "bash": { "path": "bash", "args": ["-l"] }
+  },
+  "terminal.integrated.defaultProfile.osx": "bash",
+
+  "terminal.integrated.profiles.linux": {
+    "bash": { "path": "/bin/bash", "args": ["-l"] }
+  },
+  "terminal.integrated.defaultProfile.linux": "bash",
+
+  "terminal.integrated.env.windows": {
+    "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
+    "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+  },
+  "terminal.integrated.env.osx": {
+    "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+    "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
+  },
+  "terminal.integrated.env.linux": {
+    "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+    "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
+  }
+}

@@ -1,0 +1,26 @@
+[project]
+name = "eai-project"
+version = "0.1.0"
+description = "Engineering Artificial Intelligence course project"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "pandas",
+  "scikit-learn",
+  "torch",
+  "torchvision",
+  "torchaudio",
+  "z3-solver"
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+torchaudio = [{ index = "pytorch-cpu" }]
