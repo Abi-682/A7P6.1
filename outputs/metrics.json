@@ -1,0 +1,20 @@
+{
+  "feature_names": [
+    "distance",
+    "load",
+    "congestion",
+    "battery",
+    "aisle_width"
+  ],
+  "cv_rmse_mean": 2.6906413549914516,
+  "cv_rmse_std": 0.4941015201412439,
+  "nn_test_rmse": 2.303955479118892,
+  "lin_test_rmse": 4.093279629540395,
+  "rmse_improvement": 1.789324150421503,
+  "rmse_improvement_pct": 43.71370422651563,
+  "depth_rmse": {
+    "1_hidden_32": 2.671557828942128,
+    "2_hidden_32_16": 2.8122162448938863,
+    "3_hidden_32_16_8": 3.4325538464847005
+  }
+}

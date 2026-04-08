@@ -36,6 +36,42 @@ TEST_SIZE = 0.2
 N_SPLITS = 5
 
 
+def generate_picking_time_dataset(n: int = 400, seed: int = SEED) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Generate the synthetic warehouse picking-time dataset used in the exercise."""
+    rng = np.random.default_rng(seed)
+
+    distance = rng.uniform(2.0, 30.0, n)
+    load = rng.uniform(1.0, 50.0, n)
+    congestion = rng.poisson(1.5, n).astype(np.float32)
+    battery = rng.beta(5.0, 2.0, n)
+    aisle_width = rng.uniform(1.5, 3.0, n)
+
+    y = (
+        5.0
+        + 0.8 * distance
+        + 0.15 * load
+        + 0.4 * congestion * distance
+        + 12.0 * (battery < 0.2).astype(np.float32)
+        - 2.0 * aisle_width
+        + 0.01 * (distance**2)
+        + rng.normal(0.0, 2.0, n)
+    )
+
+    x = np.column_stack([distance, load, congestion, battery, aisle_width]).astype(np.float32)
+    y = y.astype(np.float32)
+    feature_names = np.array(["distance", "load", "congestion", "battery", "aisle_width"], dtype=object)
+    return x, y, feature_names
+
+
+def ensure_dataset(path: Path, seed: int = SEED, n: int = 400) -> None:
+    """Create the dataset on disk if it does not exist."""
+    if path.exists():
+        return
+
+    x, y, feature_names = generate_picking_time_dataset(n=n, seed=seed)
+    np.savez(path, X=x, y=y, feature_names=feature_names)
+
+
 def set_seed(seed: int = SEED) -> None:
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -440,11 +476,27 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Picking-time neural network experiment")
     parser.add_argument("--data", type=Path, default=Path("picking_time_data.npz"), help="Path to .npz dataset")
     parser.add_argument("--out-dir", type=Path, default=Path("outputs"), help="Directory for plots/reports")
+    parser.add_argument(
+        "--report-file",
+        type=Path,
+        default=Path("exercise_1_report.pdf"),
+        help="PDF report output path",
+    )
+    parser.add_argument(
+        "--generate-data-if-missing",
+        action="store_true",
+        help="Generate the synthetic dataset using the exercise formula if --data is missing",
+    )
     args = parser.parse_args()
+
+    if args.generate_data_if_missing:
+        ensure_dataset(args.data, seed=SEED, n=400)
 
     if not args.data.exists():
         raise FileNotFoundError(
-            f"Dataset not found at {args.data}. Place picking_time_data.npz in the workspace or pass --data."
+            "Dataset not found at "
+            f"{args.data}. Place picking_time_data.npz in the workspace, pass --data, "
+            "or run with --generate-data-if-missing."
         )
 
     set_seed(SEED)
@@ -538,7 +590,10 @@ def main() -> None:
     metrics_path = args.out_dir / "metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
 
-    report_path = args.out_dir / "exercise_1_report.pdf"
+    report_path = args.report_file
+    if report_path.parent != Path(""):
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+
     build_two_page_report(
         report_file=report_path,
         cv_plot=cv_plot,
